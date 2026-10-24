@@ -16,7 +16,7 @@ get_header();
   <div class="trails-search-row">
     <input id="search-box" type="text" placeholder="Search trails...">
     <select id="category">
-      <option value="all">All categories</option>
+      <option value="">All categories</option>
       <option value="mountain">Mountain</option>
       <option value="beach">Beach</option>
       <option value="forest">Forest</option>
