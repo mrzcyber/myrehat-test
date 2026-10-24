@@ -1,5 +1,5 @@
 <?php
-/** MyRehat Test child theme — functions.php. Contains 3 planted PHP bugs (Part 2). */
+/** MyRehat Test child theme - functions.php */
 
 add_action( 'wp_enqueue_scripts', 'myrehat_test_assets' );
 function myrehat_test_assets() {
@@ -11,26 +11,43 @@ function myrehat_test_assets() {
         '1.0.0',
         true
     );
+    // booking.js (A6, A9, A11, A12)
+    wp_enqueue_script(
+        'myrehat-test-booking',
+        get_stylesheet_directory_uri() . '/booking.js',
+        array(),
+        filemtime( get_stylesheet_directory() . '/booking.js' ),
+        true
+    );
 }
 
-// BUG P1: missing text domain — should be __( 'Book a guided hike', 'myrehat-test' ).
+// FIX B1: text-domain ditambahkan.
 function myrehat_test_booking_title() {
-    return __( 'Book a guided hike' );
+    return esc_html__( 'Book a guided hike', 'myrehat-test' );
 }
 
-// BUG P2: raw $_POST used, no nonce check, no sanitization.
+// FIX B2: nonce + unslash + sanitasi + validasi format tanggal.
 add_action( 'template_redirect', 'myrehat_test_booking_handler' );
 function myrehat_test_booking_handler() {
-    if ( isset( $_POST['trails_booking'] ) ) {
-        $date = $_POST['date'];
+    if ( ! isset( $_POST['trails_booking'] ) ) {
+        return;
+    }
+    if ( ! isset( $_POST['trails_booking_nonce'] )
+        || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['trails_booking_nonce'] ) ), 'trails_booking_action' ) ) {
+        wp_die( esc_html__( 'Invalid request.', 'myrehat-test' ), '', array( 'response' => 403 ) );
+    }
+    $date = isset( $_POST['date'] ) ? sanitize_text_field( wp_unslash( $_POST['date'] ) ) : '';
+    if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
         set_transient( 'trails_last_booking', $date, HOUR_IN_SECONDS );
     }
 }
 
-// BUG P3: callback expects 2 args but only 1 accepted — $trail_id is always null.
-add_action( 'myrehat_trail_viewed', 'myrehat_test_count_view', 10, 1 );
+// FIX B3: accepted_args diubah 1 -> 2 supaya $trail_id dan $count diterima.
+add_action( 'myrehat_trail_viewed', 'myrehat_test_count_view', 10, 2 );
 function myrehat_test_count_view( $trail_id, $count = 1 ) {
-    $key = 'trail_views_' . $trail_id;
-    $total = (int) get_option( $key, 0 );
+    $trail_id = absint( $trail_id );
+    $count    = absint( $count );
+    $key      = 'trail_views_' . $trail_id;
+    $total    = (int) get_option( $key, 0 );
     update_option( $key, $total + $count );
 }

@@ -60,12 +60,27 @@ get_header();
   <section class="trails-booking">
     <h2><?php echo esc_html( myrehat_test_booking_title() ); ?></h2>
     <form id="booking-form">
-      <label>Name <input type="text" name="name" required></label>
-      <label>Date <input type="date" name="date" required></label>
-      <p id="trails-total">Total: -</p>
-      <button type="submit">Request booking</button>
-    </form>
-    <div id="trails-confirmation" hidden></div>
+  <label>Name <input type="text" name="name" required></label>
+  <label>Date <input type="date" name="date" required></label>
+
+  <fieldset>
+    <legend>Plan</legend>
+    <label><input type="radio" name="plan" value="daily" checked> Daily</label>
+    <label><input type="radio" name="plan" value="monthly"> Monthly</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Digital Nomad?</legend>
+    <label><input type="radio" name="nomad" value="yes" required> Ya</label>
+    <label><input type="radio" name="nomad" value="no" required> Tidak</label>
+  </fieldset>
+
+  <label><input type="checkbox" name="agree" value="1" required> I agree to the Host Terms</label>
+
+  <p id="trails-total">Total: -</p>
+  <button type="submit">Request booking</button>
+</form>
+<div id="trails-confirmation" hidden></div>
   </section>
 </main>
 
