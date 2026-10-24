@@ -3,7 +3,7 @@
 get_header();
 ?>
 <header class="site-header-trails">
-  <h1>Hiking Advantures</h1>
+  <h1>Tropic Hiking Trails</h1>
   <p>Find your next trail with MyRehat</p>
   <input id="main-search" type="text" placeholder="Search homepage...">
 </header>
